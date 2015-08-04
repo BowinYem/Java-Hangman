@@ -11,14 +11,16 @@ public class Game {
 	private static ArrayList<Character> guessedLetters = new ArrayList<Character>();
 	private static int chances = 6;
 	private static Scanner kb = new Scanner(System.in);
-	private static char letter;
+	private static String letter;
+	private static boolean twoPlayers = false;
 		
 	public static void main(String[] args)
 	{
 		playGame();
+		kb.close();
 	}
 	
-	public static void setWord()
+	public static void playerSetWord()
 	{	
 		
 		while(true)
@@ -30,21 +32,29 @@ public class Game {
 		}
 	}
 	
+	public static void aiSetWord()
+	{
+		word = RandomWord.getWord();
+	}
+	
 	public static boolean isWord(String word)
 	{
 		return word.matches("[a-zA-Z]+");
 	}
 	
-	public static boolean validGuess(char guess)
+	public static boolean validGuess(String guess)
 	{
-		return Character.toString(guess).length() == 1 && Character.toString(guess).matches("[a-zA-Z]+");
+		return guess.length() == 1 && guess.matches("[a-zA-Z]+");
 	}
 		
 	public static void playGame()
 	{
 		
-		setWord();
+		System.out.println("1 player or 2 players?");
 		
+		if(twoPlayers) playerSetWord();
+		else aiSetWord();
+	
 		progress = new char[word.length()];
 		for(int i = 0; i < word.length(); i++)
 		{
@@ -55,6 +65,7 @@ public class Game {
 		{
 			if(checkWin())
 			{
+				updateInterface();
 				System.out.println("YOU WIN");
 				return;	
 			}
@@ -63,7 +74,7 @@ public class Game {
 		}		
 		
 		updateInterface();
-		System.out.println("GAME OVER");
+		System.out.println("GAME OVER. The word was: " + word);
 	}
 	
 	public static boolean checkWin()
@@ -77,6 +88,8 @@ public class Game {
 	
 	public static void updateInterface()
 	{
+		System.out.println("__________________");
+		
 		for(int i = 0; i < word.length(); i++)
 		{
 			System.out.print(progress[i] + " ");
@@ -95,13 +108,13 @@ public class Game {
 		while(true)
 		{
 			System.out.println("Enter a letter");
-			letter = kb.next().charAt(0);
+			letter = kb.next();
 			if(validGuess(letter)) break;
 			else System.out.println("That's not a letter");
 		}
 
 	
-		if(word.contains(Character.toString(letter)))
+		if(word.contains(letter))
 		{
 			System.out.println("Yeah, it's in there!");
 			updateProgress(letter);
@@ -113,17 +126,17 @@ public class Game {
 
 		}
 		
-		guessedLetters.add(letter);
+		guessedLetters.add(letter.charAt(0));
 
 	}
 	
-	public static void updateProgress(char c)
+	public static void updateProgress(String c)
 	{
 		for(int i = 0; i < word.length(); i++)
 		{
-			if(word.charAt(i) == c)
+			if(word.charAt(i) == c.charAt(0))
 			{
-				progress[i] = c;
+				progress[i] = c.charAt(0);
 			}
 		}
 	}
@@ -133,21 +146,21 @@ public class Game {
 		switch(chances){
 			
 		case 0: 
-			System.out.println("O");
+			System.out.println(" O");
 			System.out.println("-|-");
 			System.out.println("||");
 			break;
 		case 1:
-			System.out.println("O");
+			System.out.println(" O");
 			System.out.println("-|-");
 			System.out.println("|");
 			break;
 		case 2:
-			System.out.println("O");
+			System.out.println(" O");
 			System.out.println("-|-");
 			break;
 		case 3:
-			System.out.println("O");
+			System.out.println(" O");
 			System.out.println("-|");
 			break;
 		case 4:
