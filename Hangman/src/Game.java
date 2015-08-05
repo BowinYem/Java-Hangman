@@ -13,6 +13,7 @@ public class Game {
 	private static Scanner kb = new Scanner(System.in);
 	private static String letter;
 	private static boolean twoPlayers = false;
+	private static String difficulty;
 		
 	public static void main(String[] args)
 	{
@@ -21,40 +22,79 @@ public class Game {
 	}
 	
 	public static void playerSetWord()
-	{	
-		
+	{		
 		while(true)
 		{
 			System.out.println("Player 1, enter a word for Player 2 to guess. Must be a valid word.");
 			word =  kb.next();		
-			if(isWord(word)) break;
+			if(word.matches("[a-zA-Z]+")) break;
 			else System.out.println("Word is not valid.");
 		}
 	}
 	
 	public static void aiSetWord()
 	{
-		word = RandomWord.getWord();
+		RandomWord randWord = null;
+		
+		switch(difficulty){
+		
+		case "Easy":
+			randWord = new RandomWord(100000, 1, 5);
+			break;
+		case "Medium":
+			randWord = new RandomWord(10000, 3, -1);
+			break;
+		case "Hard":
+			randWord = new RandomWord(500, 5, -1);
+			break;
+		}
+
+		word = randWord.getWord();
+	}
+		
+	public static void setPlayers()
+	{
+		String players = null;
+		while(true)
+		{
+			System.out.println("1 or 2 players?");
+			players = kb.next();
+			
+			if(players.equals("1"))
+			{
+				twoPlayers = false;
+				break;
+			}
+			else if(players.equals(("2")))
+			{
+				twoPlayers = true;
+				break;
+			}
+		}
 	}
 	
-	public static boolean isWord(String word)
+	public static void setDifficulty()
 	{
-		return word.matches("[a-zA-Z]+");
-	}
-	
-	public static boolean validGuess(String guess)
-	{
-		return guess.length() == 1 && guess.matches("[a-zA-Z]+");
+		System.out.println("Choose one of the following AI difficulty levels: Easy, Medium, or Hard");
+		while(true)
+		{
+			difficulty = kb.next();
+			if(difficulty.equals("Easy") || difficulty.equals("Medium") || difficulty.equals("Hard")) break;
+			else System.out.println("Enter a valid difficulty level");
+		}
 	}
 		
 	public static void playGame()
 	{
-		
-		System.out.println("1 player or 2 players?");
+		setPlayers();
 		
 		if(twoPlayers) playerSetWord();
-		else aiSetWord();
-	
+		else
+		{
+			setDifficulty();
+			aiSetWord();		
+		}
+				
 		progress = new char[word.length()];
 		for(int i = 0; i < word.length(); i++)
 		{
@@ -109,11 +149,10 @@ public class Game {
 		{
 			System.out.println("Enter a letter");
 			letter = kb.next();
-			if(validGuess(letter)) break;
+			if(letter.length() == 1 && letter.matches("[a-zA-Z]+")) break;
 			else System.out.println("That's not a letter");
 		}
 
-	
 		if(word.contains(letter))
 		{
 			System.out.println("Yeah, it's in there!");
@@ -127,7 +166,6 @@ public class Game {
 		}
 		
 		guessedLetters.add(letter.charAt(0));
-
 	}
 	
 	public static void updateProgress(String c)
