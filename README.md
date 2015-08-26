@@ -1,4 +1,3 @@
 # Java-Hangman
-+ Hangman in Java
-+ This is a change in the "README" file
-+ And here's a direct commit to the master branch
+This is a command prompt version of Hangman. Players will be able to play</br>
+by themselves with varying difficulty levels, or with another player.
